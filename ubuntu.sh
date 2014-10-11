@@ -73,7 +73,7 @@ if [ -f /etc/dhcp/dhcpd.$in_interface.conf ]; then
     sudo rm /etc/dhcp/dhcpd.$in_interface.conf
 fi
 
-ip_prefix=`ifconfig ${out_interface} | grep "inet addr" | awk -F: '{print $2}' | awk -F. '{print $1}'`
+ip_prefix=`ifconfig ${out_interface} | grep -E "inet addr|inet 地址" | awk -F: '{print $2}' | awk -F. '{print $1}'`
 case ${ip_prefix} in
     "10")
         ip_prefix="172.16"
