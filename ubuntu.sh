@@ -124,9 +124,6 @@ echo "[*] Setting hostapd ... "
 
 ssid=360_FREE_WIFI$RANDOM
 
-echo
-echo "****  SSID : $ssid, key: $key. Enjoy! ****"
-echo
 function clean_up {
     echo "[*] Cleaning up ..."
     if [ -f /var/run/dhcp-server/dhcpd.pid ]; then
@@ -142,10 +139,7 @@ if [ ! -d $WIFI_HOME ]; then
     mkdir $WIFI_HOME
 fi
 
-if [ -f $WIFI_HOME/.hostapd.$in_interface.conf ]; then
-    rm $WIFI_HOME/.hostapd.$in_interface.conf
-fi
-
+if [ ! -f $WIFI_HOME/.hostapd.$in_interface.conf ]; then
 echo "interface=$in_interface
 driver=nl80211
 ssid=$ssid
@@ -159,6 +153,12 @@ wpa_passphrase=$key
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP" | tee  $WIFI_HOME/.hostapd.$in_interface.conf > /dev/null
+else
+    . $WIFI_HOME/.hostapd.$in_interface.conf
+    echo
+    echo "****  SSID : $ssid, key: $wpa_passphrase Enjoy! ****"
+    echo
+fi
 
 # sudo hostapd $WIFI_HOME/.hostapd.$in_interface.conf  -P $WIFI_HOME/.hostapd.$in_interface.pid -B
 sudo hostapd $WIFI_HOME/.hostapd.$in_interface.conf  > /dev/null
